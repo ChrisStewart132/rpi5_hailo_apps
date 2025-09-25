@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hailo 2D Top-Down Minimap</title>
+    <style>
+        body { font-family: sans-serif; background-color: #282c34; color: #abb2bf; margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
+        .controls { padding: 15px; background-color: #21252b; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+        .control-group { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .control-group label { font-size: 14px; font-weight: bold; }
+        .control-group span { font-size: 12px; min-width: 50px; text-align: center; background-color: #282c34; padding: 2px 5px; border-radius: 4px;}
+        input[type="range"] { width: 150px; }
+        .main-actions { border-left: 2px solid #3b4048; padding-left: 20px; }
+        button { font-size: 16px; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; background-color: #61afef; color: white; }
+        button.active { background-color: #e06c75; }
+        #status { margin-left: 15px; font-weight: bold; }
+        canvas { border: 2px solid #3b4048; background-color: #1e2228; }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <div class="control-group">
+            <label for="fovSlider">Field of View (FOV)</label>
+            <input type="range" id="fovSlider" min="30" max="150" value="90" step="1">
+            <span id="fovValue">66°</span>
+        </div>
+
+        <div class="control-group">
+            <label for="distanceSlider">Distance Scale</label>
+            <input type="range" id="distanceSlider" min="1" max="50" value="10" step="1">
+            <span id="distanceValue">10</span>
+        </div>
+
+        <div class="control-group">
+            <label for="confidenceSlider">Min Confidence</label>
+            <input type="range" id="confidenceSlider" min="0" max="1" value="0.4" step="0.05">
+            <span id="confidenceValue">40%</span>
+        </div>
+
+        <div class="main-actions">
+            <button id="toggleButton">Start Polling</button>
+            <span id="status">Status: OFF</span>
+        </div>
+    </div>
+    <canvas id="canvas" width="800" height="800"></canvas>
+    <script src="/main.js"></script>
+</body>
+</html>
