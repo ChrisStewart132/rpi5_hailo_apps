@@ -8,14 +8,45 @@ import socket  # Added for networking
 import json    # Added for data serialization
 import os      # Added for environment variable
 from pathlib import Path # Added for path handling
+import sys     # <--- ADDED: System module for path modification
 
+
+# ----------------------------------------------------------------------
+# START: Solution 1 - Path Modification
+# This block allows the script to import modules from the project root 
+# (two directories up)
+# ----------------------------------------------------------------------
+
+# 1. Get the path to the directory containing this script
+current_script_dir = Path(__file__).resolve().parent
+
+# 2. Go up two levels to reach the assumed project root
+# If structure is root/github_folder/another_dir/this_script.py
+# .parent.parent gives us 'root/'
+project_root = current_script_dir.parent.parent
+
+# 3. Add the project root to the system path
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root)) 
+    print(f"Added {project_root} to sys.path for external imports.")
+
+# ----------------------------------------------------------------------
+# END: Solution 1 - Path Modification
+# ----------------------------------------------------------------------
+
+# Now, any script file named e.g., 'utility_script.py' in the project_root 
+# can be imported like this:
+# import utility_script 
+
+# Note: The existing Hailo imports below are relative to the Hailo environment, 
+# not your local project structure, so they remain unchanged.
 from hailo_apps.hailo_app_python.core.gstreamer.gstreamer_app import app_callback_class
 # Note: Using the simple app class
 from hailo_apps.hailo_app_python.apps.detection_simple.detection_pipeline_simple import GStreamerDetectionApp
 
 # --- Configuration for the UDP Sender ---
 # !!! IMPORTANT: CHANGE THIS TO YOUR PC's IP ADDRESS !!!
-PC_IP = "localhost"  # Example: Find yours with 'ifconfig' or 'ip addr' on your PC
+PC_IP = "localhost"  # Using localhost since we assume the server runs on the same RPi5
 PORT = 12345
 # ----------------------------------------
 
@@ -93,8 +124,15 @@ def app_callback(pad, info, user_data):
     return Gst.PadProbeReturn.OK
 
 if __name__ == "__main__":
+    
+    # Note: If your project structure logic for finding the .env file 
+    # was already using the project root (like the line below was before), 
+    # you can remove the path modification block above, as you were already 
+    # calculating the project root here. However, calculating it explicitly 
+    # at the top makes the import intent clearer.
+    
     # It's good practice to set the Hailo environment file explicitly
-    project_root = Path(__file__).resolve().parent.parent
+    # project_root is calculated above and is two levels up
     env_file     = project_root / ".env"
     os.environ["HAILO_ENV_FILE"] = str(env_file)
     
